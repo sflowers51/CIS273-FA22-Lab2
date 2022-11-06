@@ -27,14 +27,14 @@ public class Program
                 char top;
                 bool result = stack.TryPeek(out top);
                 // handle result == false
-
+                bool something = Matches(c, top);
                 // if they match, pop()
-                if (Matches(c, top) ) 
+                if (something == true) 
                 {
                     stack.Pop();
                 }
                 // else, return false
-                else
+                else if( something == false)
                 {
                     return false;
                 }
@@ -43,7 +43,7 @@ public class Program
         }
 
         // if stack is empty, return true
-        if( stack.Count ==0)
+        if( stack.Count == 0)
         {
             return true;
         }
@@ -54,23 +54,113 @@ public class Program
 
     private static bool Matches(char closing, char opening)
     {
-        throw new NotImplementedException();
-    }
+        if (closing == ')')
+        {
+            if(opening == '(')
+            {
+                return true;
+            }
+            return false;
+        }
 
+        else if(closing == ']')
+        {
+            if (opening == '[')
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        else if (closing == '}')
+        {
+            if (opening == '{') 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        else if (closing == '>')
+        {
+            if (opening == '<')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
 
     public static double? Evaluate(string s)
     {
+        Stack<double> stack = new Stack<double>();
+
+        if (string.IsNullOrEmpty(s))
+        {
+            return null;
+        }
         // parse string into tokens
         string[] tokens = s.Split();
 
         // foreach token
-        // if it's a number, push to stack
 
-        // if it's a math operator, pop twice;
-        // compute result;
-        // push result onto stack
+        foreach (string token in tokens)
+        {
+            
+            if(token == "+"|| token == "-" || token == "*" || token == "/")
+            {
+                // if it's a math operator, pop twice;
+                double pop1 = stack.Pop();
+                double pop2 = stack.Pop();
+
+
+                // compute result;
+                if (token == "+")
+                {
+                    double result = pop2 + pop1;
+
+                    // push result onto stack
+                    stack.Push(result);
+                }
+
+                else if (token == "-")
+                {
+                    double result = pop2 - pop1;
+                    stack.Push(result);
+                }
+
+                else if (token == "*")
+                {
+                    double result = pop2 * pop1;
+                    stack.Push(result);
+                }
+
+                else if (token == "/")
+                {
+                    double result = pop2 / pop1;
+                    stack.Push(result);
+                }
+
+            }
+
+            // if it's a number, push to stack
+            else
+            {
+                double nowInt = Convert.ToDouble(token);
+                stack.Push(nowInt);
+            }
+        }
+
+
 
         // return top of stack (if the stack has 1 element)
+        if( stack.Count == 1)
+        {
+            return stack.Peek();
+        }
 
         return null;
     }
